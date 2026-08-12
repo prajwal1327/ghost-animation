@@ -1,23 +1,17 @@
 const ITEMS = [
-  'Animation',
-  'Motion Design',
-  '3D Visuals',
-  'Brand Animation',
-  'Visual Storytelling',
-  'Character Animation',
-  'Motion Graphics',
-  'VFX',
-  'Explainer Video',
-  'Creative Direction',
+  '2D Animation', '3D Motion', 'Motion Graphics', 'Brand Films',
+  'Visual Storytelling', 'Character Animation', 'VFX', 'Explainer Video',
+  'Creative Direction', 'Concept to Frame',
 ]
 
-function MarqueeTrack() {
+function Track() {
+  const all = [...ITEMS, ...ITEMS]
   return (
-    <div className="marquee-track" aria-hidden>
-      {[...ITEMS, ...ITEMS].map((item, i) => (
+    <div className="marquee-track">
+      {all.map((item, i) => (
         <span className="marquee-item" key={i}>
           {item}
-          <span className="dot" />
+          <span className="star">★</span>
         </span>
       ))}
     </div>
@@ -26,8 +20,8 @@ function MarqueeTrack() {
 
 export default function MarqueeBanner() {
   return (
-    <div className="marquee-wrap" aria-label="Services: Animation, Motion Design and more">
-      <MarqueeTrack />
+    <div className="marquee-section" aria-label="Our services">
+      <Track />
     </div>
   )
 }

@@ -1,72 +1,94 @@
 import { useEffect, useRef } from 'react'
-import { services } from '../data/projects'
+
+const SERVICES = [
+  {
+    icon: '🎬',
+    iconBg: 'service-icon--yellow',
+    card: 'service-card--light',
+    title: 'Animation',
+    desc: 'Bringing your ideas and stories to life through expressive, fluid animation — from character to concept.',
+  },
+  {
+    icon: '⚡',
+    iconBg: 'service-icon--purple',
+    card: 'service-card--dark',
+    title: 'Motion Design',
+    desc: 'Dynamic visual systems and motion graphics designed to capture attention and communicate your message instantly.',
+  },
+  {
+    icon: '🌐',
+    iconBg: 'service-icon--green',
+    card: 'service-card--border',
+    title: '3D & Visuals',
+    desc: 'Immersive 3D worlds, product visuals and cinematic renders that make your brand impossible to ignore.',
+  },
+  {
+    icon: '🏷️',
+    iconBg: 'service-icon--yellow',
+    card: 'service-card--border',
+    title: 'Brand Animation',
+    desc: 'Turning static brand identities into living, breathing motion experiences across every platform.',
+  },
+  {
+    icon: '🎞️',
+    iconBg: 'service-icon--purple',
+    card: 'service-card--light',
+    title: 'Video & Post',
+    desc: 'Editing, compositing and visual finishing that elevates every frame from good to unforgettable.',
+  },
+  {
+    icon: '✍️',
+    iconBg: 'service-icon--green',
+    card: 'service-card--dark',
+    title: 'Creative Story',
+    desc: 'Concept to final frame — we craft narratives that move audiences emotionally and drive real results.',
+  },
+]
 
 export default function Services() {
-  const sectionRef = useRef(null)
+  const ref = useRef(null)
 
   useEffect(() => {
-    const items = sectionRef.current?.querySelectorAll('.service-item')
-    if (!items) return
-
+    const cards = ref.current?.querySelectorAll('.service-card')
+    if (!cards) return
     const observers = []
-    items.forEach((item, i) => {
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => {
-              item.style.opacity = '1'
-              item.style.transform = 'translateX(0)'
-            }, i * 80)
-            obs.disconnect()
-          }
-        },
-        { threshold: 0.1 }
-      )
-      item.style.opacity = '0'
-      item.style.transform = 'translateX(-30px)'
-      item.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)'
-      obs.observe(item)
+    cards.forEach((card, i) => {
+      card.style.opacity = '0'
+      card.style.transform = 'translateY(30px)'
+      card.style.transition = `opacity 0.6s ease ${i * 0.08}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${i * 0.08}s`
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; obs.disconnect() }
+      }, { threshold: 0.1 })
+      obs.observe(card)
       observers.push(obs)
     })
-
-    return () => observers.forEach((o) => o.disconnect())
+    return () => observers.forEach(o => o.disconnect())
   }, [])
 
   return (
-    <section className="section" id="services" ref={sectionRef} style={{ background: 'var(--bg2)' }}>
-      <div className="section-label">What We Do</div>
-      <h2 className="services-title">
-        What We<br />
-        <span style={{ color: 'var(--accent)' }}>Make Move</span>
-      </h2>
-
-      <div className="service-list">
-        {services.map((s) => (
-          <div className="service-item" key={s.num} data-cursor-label="LEARN MORE">
-            <span className="service-num">{s.num}</span>
-            <span className="service-name">{s.name}</span>
-            <span className="service-tag">{s.tag}</span>
-          </div>
-        ))}
+    <section className="section section--grey" id="services">
+      <div style={{ textAlign: 'center' }}>
+        <div className="pill">What We Do</div>
+        <h2 className="section-title">
+          What We <span style={{ color: 'var(--purple)' }}>Make Move</span>
+        </h2>
+        <p style={{ fontSize: 17, color: 'var(--text-body)', maxWidth: 520, margin: '16px auto 0' }}>
+          From a single logo animation to a full brand film — we handle every stage of the motion design process.
+        </p>
       </div>
 
-      {/* Bottom descriptor */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 24,
-        marginTop: 80,
-        paddingTop: 48,
-        borderTop: '1px solid var(--border)',
-      }}>
-        {[
-          { title: 'Frame-Perfect Quality', desc: 'Every project delivered at the highest visual standard — no shortcuts.' },
-          { title: 'Creative & Strategic', desc: 'We think about why before we think about how. Concept first.' },
-          { title: 'Built for Impact', desc: 'Motion designed to stop the scroll, hold attention, and drive action.' },
-        ].map(({ title, desc }) => (
-          <div key={title}>
-            <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 700, marginBottom: 12, letterSpacing: '-0.01em' }}>{title}</div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7 }}>{desc}</div>
+      <div className="services-grid" ref={ref}>
+        {SERVICES.map(({ icon, iconBg, card, title, desc }) => (
+          <div key={title} className={`service-card ${card}`}>
+            <div className={`service-icon ${iconBg}`}>{icon}</div>
+            <div className="service-title">{title}</div>
+            <p className="service-desc">{desc}</p>
+            <div className="service-link">
+              Learn More
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2 12L12 2M12 2H4M12 2V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </div>
         ))}
       </div>

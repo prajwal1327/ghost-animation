@@ -1,79 +1,79 @@
 const YEAR = new Date().getFullYear()
 
-const LINKS = [
-  { label: 'Work', href: '#work' },
-  { label: 'Services', href: '#services' },
-  { label: 'About', href: '#about' },
-  { label: 'Process', href: '#process' },
-  { label: 'Contact', href: '#contact' },
-]
-
-export default function Footer() {
-  const handleClick = (href) => {
+const go = (href) => {
+  if (href.startsWith('#')) {
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
   }
+}
 
+export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer__top-line" />
-      <div className="footer__inner">
+    <footer className="footer" id="footer">
+      <div className="footer-top">
         {/* Brand */}
         <div>
-          <div className="footer__logo">
-            <span className="accent">Ghost</span>Animation
+          <div className="footer-logo">
+            <span className="footer-logo-icon">👻</span>
+            Ghost<span style={{ color:'var(--purple)' }}>Animation</span>
           </div>
-          <div className="footer__tagline">Made With Motion.</div>
+          <p className="footer-tagline">
+            We turn ideas into motion. Premium animation, motion design, and visual
+            storytelling — built frame by frame.
+          </p>
+          <div style={{ display:'flex', gap:12 }}>
+            {['🎬','📸','🎵'].map((icon, i) => (
+              <div key={i} style={{
+                width:40, height:40, background:'rgba(255,255,255,0.06)',
+                borderRadius:10, display:'flex', alignItems:'center',
+                justifyContent:'center', fontSize:18, cursor:'pointer',
+                transition:'background 0.2s ease',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background='var(--purple)'}
+              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.06)'}
+              >{icon}</div>
+            ))}
+          </div>
         </div>
 
-        {/* Nav */}
-        <nav className="footer__links" aria-label="Footer navigation">
-          {LINKS.map(({ label, href }) => (
-            <a
-              key={href}
-              href={href}
-              onClick={(e) => { e.preventDefault(); handleClick(href) }}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
+        {/* Nav links */}
+        <div>
+          <div className="footer-col-title">Quick Links</div>
+          <ul className="footer-links">
+            {[
+              { label:'Home', href:'#hero' },
+              { label:'Our Work', href:'#work' },
+              { label:'Services', href:'#services' },
+              { label:'About Us', href:'#about' },
+              { label:'Process', href:'#process' },
+              { label:'Contact', href:'#contact' },
+            ].map(({ label, href }) => (
+              <li key={href}>
+                <a href={href} onClick={e => { e.preventDefault(); go(href) }}>{label}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* Contact */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
-          <a
-            href="mailto:Shubhamgadge602@gmail.com"
-            className="footer__links"
-            style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', transition: 'color 0.2s ease' }}
-            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent)'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
-          >
-            Shubhamgadge602@gmail.com
-          </a>
-          <a
-            href="tel:+918431452860"
-            className="footer__links"
-            style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', transition: 'color 0.2s ease' }}
-            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent)'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
-          >
-            +91 84314 52860
-          </a>
+        <div>
+          <div className="footer-col-title">Get In Touch</div>
+          <div className="footer-contact">
+            <a href="tel:+918431452860">📞 +91 84314 52860</a>
+            <a href="mailto:Shubhamgadge602@gmail.com">✉️ Shubhamgadge602@gmail.com</a>
+            <a href="#contact" onClick={e => { e.preventDefault(); go('#contact') }}>🚀 Start a Project</a>
+          </div>
+          <div style={{ marginTop:24 }}>
+            <div className="footer-col-title" style={{ marginBottom:12 }}>Services</div>
+            {['Animation', 'Motion Design', '3D Visuals', 'Brand Films', 'Explainer Video'].map(s => (
+              <div key={s} style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:6 }}>— {s}</div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Copyright */}
-      <div style={{
-        borderTop: '1px solid var(--border)',
-        marginTop: 24,
-        paddingTop: 24,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: 12,
-      }}>
-        <span className="footer__copy">© {YEAR} Ghost Animation. All rights reserved.</span>
-        <span className="footer__copy">Animation. Motion. Stories.</span>
+      <div className="footer-bottom">
+        <span className="footer-copy">© {YEAR} Ghost Animation. All rights reserved.</span>
+        <span className="footer-made">Made with <span>♥</span> and Motion.</span>
       </div>
     </footer>
   )

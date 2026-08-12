@@ -1,110 +1,95 @@
-import { useEffect, useRef } from 'react'
+import { useRef, useState } from 'react'
 
 export default function Contact() {
-  const sectionRef = useRef(null)
+  const [form, setForm] = useState({ name:'', email:'', service:'', message:'' })
 
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.querySelectorAll('.contact-animate').forEach((child, i) => {
-            setTimeout(() => {
-              child.style.opacity = '1'
-              child.style.transform = 'translateY(0)'
-            }, i * 100)
-          })
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.1 }
+  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const subject = encodeURIComponent(`Project Enquiry from ${form.name}`)
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\nService: ${form.service}\n\nMessage:\n${form.message}`
     )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
-  const animStyle = {
-    opacity: 0,
-    transform: 'translateY(40px)',
-    transition: 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
+    window.location.href = `mailto:Shubhamgadge602@gmail.com?subject=${subject}&body=${body}`
   }
 
   return (
-    <section className="contact" id="contact" ref={sectionRef}>
-      <div className="contact__bg" />
-
-      <div className="contact-animate section-label" style={{ ...animStyle, justifyContent: 'center' }}>
-        Get In Touch
+    <section className="section section--grey" id="contact">
+      <div style={{ textAlign:'center' }}>
+        <div className="pill">Get In Touch</div>
+        <h2 className="section-title">
+          Contact <span style={{ color:'var(--purple)' }}>Directly</span>
+        </h2>
+        <p style={{ fontSize:17, color:'var(--text-body)', maxWidth:500, margin:'16px auto 0' }}>
+          Have an idea? Let's talk. We'd love to hear about your project and explore how we can bring it to life.
+        </p>
       </div>
 
-      <h2 className="contact__title contact-animate" style={animStyle}>
-        HAVE AN IDEA?
-      </h2>
-      <h2 className="contact__subtitle contact-animate" style={animStyle}>
-        LET'S MAKE IT MOVE.
-      </h2>
+      <div className="contact-grid">
+        {/* Contact info */}
+        <div>
+          <h3 style={{ fontFamily:'Poppins, sans-serif', fontSize:'clamp(22px,2.5vw,30px)', fontWeight:600, color:'var(--black)', marginBottom:8, letterSpacing:'-0.01em' }}>
+            Let's Make Something<br />
+            <span style={{ color:'var(--purple)' }}>Great Together.</span>
+          </h3>
+          <p style={{ fontSize:15, color:'var(--text-body)', lineHeight:1.8, marginBottom:32 }}>
+            Whether you need a single animation or a full motion campaign — we're ready
+            to bring your vision to life, frame by frame.
+          </p>
 
-      <div className="contact__info contact-animate" style={animStyle}>
-        <div className="contact__info-item">
-          <span className="contact__info-label">Call Us</span>
-          <a href="tel:+918431452860" className="contact__info-value">
-            +91 84314 52860
-          </a>
+          {[
+            { icon:'📞', label:'Phone', val:'+91 84314 52860', href:'tel:+918431452860', bg:'var(--yellow-light)' },
+            { icon:'✉️', label:'Email', val:'Shubhamgadge602@gmail.com', href:'mailto:Shubhamgadge602@gmail.com', bg:'var(--purple-light)' },
+            { icon:'🎬', label:'Services', val:'Animation, Motion, 3D & More', href:'#services', bg:'var(--green-light)' },
+          ].map(({ icon, label, val, href, bg }) => (
+            <a
+              key={label}
+              href={href}
+              className="contact-info-item"
+              onClick={href.startsWith('#') ? (e) => { e.preventDefault(); document.querySelector(href)?.scrollIntoView({ behavior:'smooth' }) } : undefined}
+            >
+              <div className="contact-info-icon" style={{ background: bg }}>{icon}</div>
+              <div>
+                <div className="contact-info-label">{label}</div>
+                <div className="contact-info-val">{val}</div>
+              </div>
+            </a>
+          ))}
         </div>
 
-        <div style={{ width: 1, height: 40, background: 'var(--border)', flexShrink: 0, alignSelf: 'center' }} />
-
-        <div className="contact__info-item">
-          <span className="contact__info-label">Email</span>
-          <a href="mailto:Shubhamgadge602@gmail.com" className="contact__info-value">
-            Shubhamgadge602@gmail.com
-          </a>
+        {/* Form */}
+        <div className="contact-form-card">
+          <h4 style={{ fontFamily:'Poppins, sans-serif', fontSize:20, fontWeight:600, color:'var(--black)', marginBottom:24 }}>
+            Send a Message
+          </h4>
+          <form onSubmit={handleSubmit}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+              <div className="form-group">
+                <label className="form-label">Your Name</label>
+                <input className="form-input" type="text" placeholder="Shubham Gadge" required value={form.name} onChange={set('name')} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input className="form-input" type="email" placeholder="hello@brand.com" required value={form.email} onChange={set('email')} />
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Service Needed</label>
+              <input className="form-input" type="text" placeholder="e.g. Brand Animation, 2D Character, Motion Graphics" value={form.service} onChange={set('service')} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Your Message</label>
+              <textarea className="form-textarea" placeholder="Tell us about your project, timeline and any references..." required value={form.message} onChange={set('message')} />
+            </div>
+            <button type="submit" className="btn btn-purple" style={{ width:'100%', justifyContent:'center' }}>
+              Send Message
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M14 2L2 7L7 9M14 2L9 14L7 9M14 2L7 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </form>
         </div>
-      </div>
-
-      <div className="contact__actions contact-animate" style={animStyle}>
-        <a href="mailto:Shubhamgadge602@gmail.com" className="btn-primary" data-cursor-label="EMAIL →">
-          Start a Project
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </a>
-
-        <a href="tel:+918431452860" className="btn-secondary" data-cursor-label="CALL →">
-          Call Now
-          <span className="btn-arrow">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 12L12 2M12 2H4M12 2V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </span>
-        </a>
-
-        <a href="mailto:Shubhamgadge602@gmail.com" className="btn-secondary" data-cursor-label="EMAIL →">
-          Email Us
-          <span className="btn-arrow">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 12L12 2M12 2H4M12 2V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </span>
-        </a>
-      </div>
-
-      {/* Decorative large ghost icon */}
-      <div style={{
-        position: 'absolute',
-        bottom: -40,
-        right: '5%',
-        fontFamily: 'Syne, sans-serif',
-        fontSize: 'clamp(120px, 20vw, 280px)',
-        fontWeight: 800,
-        letterSpacing: '-0.04em',
-        color: 'rgba(255,255,255,0.015)',
-        userSelect: 'none',
-        pointerEvents: 'none',
-        lineHeight: 1,
-      }} aria-hidden>
-        GHOST
       </div>
     </section>
   )

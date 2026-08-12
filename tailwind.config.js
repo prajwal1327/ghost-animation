@@ -6,19 +6,15 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        'ghost-black': '#050505',
-        'ghost-dark': '#0f0f0f',
-        'ghost-lime': '#CAFF4D',
-        'ghost-white': '#f0f0f0',
-        'ghost-muted': '#666666',
-      },
       fontFamily: {
-        'display': ['Syne', 'sans-serif'],
-        'body': ['Inter', 'sans-serif'],
+        display: ['Poppins', 'sans-serif'],
+        body: ['Arimo', 'sans-serif'],
       },
-      screens: {
-        'xs': '480px',
+      colors: {
+        purple: '#6864ED',
+        'purple-light': '#EEEEFD',
+        yellow: '#EED064',
+        green: '#33CC79',
       },
     },
   },

@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 
-const NAV_LINKS = [
+const LINKS = [
+  { label: 'Home', href: '#hero' },
   { label: 'Work', href: '#work' },
   { label: 'Services', href: '#services' },
   { label: 'About', href: '#about' },
-  { label: 'Process', href: '#process' },
+  { label: 'Contact', href: '#contact' },
 ]
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [active, setActive] = useState('#hero')
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
+    const onScroll = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -22,68 +24,70 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
-  const handleNavClick = (href) => {
+  const go = (href) => {
     setMenuOpen(false)
+    setActive(href)
     setTimeout(() => {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-    }, 400)
+      const id = href.replace('#', '')
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }, 50)
   }
 
   return (
     <>
-      <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
-        <a href="#hero" className="nav__logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <span className="accent">Ghost</span>
-          <span style={{ marginLeft: 2 }}>Animation</span>
+      <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+        {/* Logo */}
+        <a href="#hero" className="nav-logo" onClick={e => { e.preventDefault(); go('#hero') }}>
+          <span className="nav-logo-icon">👻</span>
+          Ghost<span style={{ color: 'var(--purple)' }}>Animation</span>
         </a>
 
-        <ul className="nav__links">
-          {NAV_LINKS.map(({ label, href }) => (
+        {/* Desktop links */}
+        <ul className="nav-links">
+          {LINKS.map(({ label, href }) => (
             <li key={href}>
-              <a href={href} onClick={(e) => { e.preventDefault(); handleNavClick(href) }}>
+              <a
+                href={href}
+                className={active === href ? 'active' : ''}
+                onClick={e => { e.preventDefault(); go(href) }}
+              >
                 {label}
               </a>
             </li>
           ))}
-          <li>
-            <a
-              href="#contact"
-              className="nav__cta"
-              onClick={(e) => { e.preventDefault(); handleNavClick('#contact') }}
-            >
-              Let's Create
-            </a>
-          </li>
         </ul>
 
-        <button
-          className={`nav__hamburger${menuOpen ? ' open' : ''}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+        {/* Right */}
+        <div className="nav-right">
+          <a
+            href="#contact"
+            className="nav-contact"
+            onClick={e => { e.preventDefault(); go('#contact') }}
+          >
+            Let's Talk
+          </a>
+          <button
+            className={`hamburger${menuOpen ? ' open' : ''}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span /><span /><span />
+          </button>
+        </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
-        <ul className="mobile-menu__links">
-          {[...NAV_LINKS, { label: 'Contact', href: '#contact' }].map(({ label, href }) => (
+      {/* Mobile menu */}
+      <div className={`mobile-nav${menuOpen ? ' open' : ''}`}>
+        <ul>
+          {LINKS.map(({ label, href }) => (
             <li key={href}>
-              <a
-                href={href}
-                onClick={(e) => { e.preventDefault(); handleNavClick(href) }}
-              >
-                <span>{label}</span>
-              </a>
+              <a href={href} onClick={e => { e.preventDefault(); go(href) }}>{label}</a>
             </li>
           ))}
         </ul>
-        <div className="mobile-menu__footer">
-          <span>+91 84314 52860</span>
-          <span>Shubhamgadge602@gmail.com</span>
+        <div className="mobile-nav-footer">
+          <a href="tel:+918431452860">📞 +91 84314 52860</a>
+          <a href="mailto:Shubhamgadge602@gmail.com">✉️ Shubhamgadge602@gmail.com</a>
         </div>
       </div>
     </>
